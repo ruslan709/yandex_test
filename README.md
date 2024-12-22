@@ -34,7 +34,6 @@ yandex_calculate/
 │
 ├── go.mod
 ├── go.sum
-├── LICENSE
 └── README.md
 ```
 
