@@ -20,7 +20,6 @@ type Response struct {
 	Error  string `json:"error,omitempty"`
 }
 
-// проверка на ошибку #500
 func PanicMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
@@ -44,14 +43,17 @@ func calculateHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(res)
 		return
 	}
+
 	validExpression := regexp.MustCompile(`^[0-9+\-*/\s()]+$`)
-	if !validExpression.MatchString(req.Expression) {
-		w.WriteHeader(http.StatusPaymentRequired)
+	if !validExpression.MatchString(req.Expression) || strings.TrimSpace(req.Expression) == "" {
+		w.WriteHeader(http.StatusUnprocessableEntity)
 		res.Error = "Invalid characters in expression"
 		json.NewEncoder(w).Encode(res)
+		return
 	}
+
 	if strings.Contains(req.Expression, "/0") {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnprocessableEntity)
 		res.Error = "Division by zero error"
 		json.NewEncoder(w).Encode(res)
 		return
@@ -64,10 +66,10 @@ func calculateHandler(w http.ResponseWriter, r *http.Request) {
 		res.Error = "Calculation error"
 		json.NewEncoder(w).Encode(res)
 		return
-	} else {
-		log.Println(req.Expression, "=", result)
 	}
 
+	res.Result = fmt.Sprintf("%v", result)
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(res)
 }
 
