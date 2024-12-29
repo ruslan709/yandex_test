@@ -19,7 +19,7 @@ type Response struct {
 	Result string `json:"result,omitempty"`
 	Error  string `json:"error,omitempty"`
 }
-
+var calcFunc = calculation.Calc
 func PanicMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
