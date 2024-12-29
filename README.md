@@ -43,6 +43,8 @@ yandex_calculate/
 | --- | --- |
 |``` go run ./yandex_calculate/cmd/main.go ``` | **Запуск проекта** |
 |```curl --location 'localhost:8080/api/v1/calculate'``` | **Отправка POST-запроса серверу** |
+|```go get github.com/stretchr/testify/assert ``` | **Установка пакета testify** |
+|```go test -v ./...``` | **Запуск тестов** |
 
 
 ---
